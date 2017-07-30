@@ -2,6 +2,8 @@
 #ifndef _VRAMMANAGER_H_
 #define _VRAMMANAGER_H_
 
+#include <d3d9.h>
+#include <d3dx9tex.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TEXHANDLE, indicates a particular texture.

@@ -181,7 +181,7 @@ private:
     //////////////////////////////////////////////////////////////////////////////
     
 //    TRef<IDirectInputDevice2>           m_pdid;
-	TRef<IDirectInputDevice7>			m_pdid;					// mdvalley: DInput7
+	TRef<IDirectInputDevice8>			m_pdid;					// mdvalley: DInput7
     TRef<ButtonEvent::SourceImpl>       m_pbuttonEventSource;
     DIDeviceCaps                        m_didc;
     DIDeviceInstance                    m_didi;
@@ -206,7 +206,7 @@ public:
     //////////////////////////////////////////////////////////////////////////////
     
 //    MouseInputStreamImpl(IDirectInputDevice2* pdid, HWND hwnd) :
-	MouseInputStreamImpl(IDirectInputDevice7* pdid, HWND hwnd) :		// mdvalley: DInput7
+	MouseInputStreamImpl(IDirectInputDevice8* pdid, HWND hwnd) :		// mdvalley: DInput7
         m_pdid(pdid),
 		m_hwnd(hwnd),
         m_rect(0, 0, 0, 0),                                                                         
@@ -625,7 +625,7 @@ public:
 class JoystickInputStreamImpl : public JoystickInputStream {
 private:
 //    TRef<IDirectInputDevice2>           m_pdid;
-	TRef<IDirectInputDevice7>			m_pdid;		// mdvalley: DInput7
+	TRef<IDirectInputDevice8>			m_pdid;		// mdvalley: DInput7
     DIDeviceCaps                        m_didc;
     DIDeviceInstance                    m_didi;
     TVector<TRef<ValueDDInputObject > > m_vvalueObject;
@@ -715,7 +715,7 @@ public:
     //////////////////////////////////////////////////////////////////////////////
 
 //    JoystickInputStreamImpl(IDirectInputDevice2* pdid, HWND hwnd) :
-	JoystickInputStreamImpl(IDirectInputDevice7* pdid, HWND hwnd) :		// mdvalley: DInput7
+	JoystickInputStreamImpl(IDirectInputDevice8* pdid, HWND hwnd) :		// mdvalley: DInput7
         m_pdid(pdid),
         m_bFocus(false),
         m_vvalueObject(5)
@@ -1232,14 +1232,14 @@ private:
     {
         TRef<IDirectInputDevice>  pdid;
 //        TRef<IDirectInputDevice2> pdid2;
-		TRef<IDirectInputDevice7> pdid2;		// mdvalley: DInput7
+		TRef<IDirectInputDevice8> pdid2;		// mdvalley: DInput7
 
         DDCall(m_pdi->CreateDevice( pdidi->guidInstance, &pdid, NULL));
 //        DDCall(pdid->QueryInterface(IID_IDirectInputDevice2, (void**)&pdid2));
-		DDCall(pdid->QueryInterface(IID_IDirectInputDevice7, (void**)&pdid2));
+		DDCall(pdid->QueryInterface(IID_IDirectInputDevice8, (void**)&pdid2));
 
         switch (pdidi->dwDevType & 0xff) {
-            case DIDEVTYPE_MOUSE:
+            case DI8DEVTYPE_MOUSE:
                 {
                     if (m_pmouseInputStream == NULL) {
                         m_pmouseInputStream = new MouseInputStreamImpl(pdid2, m_hwnd);
@@ -1247,7 +1247,7 @@ private:
                 }
                 break;
 
-            case DIDEVTYPE_JOYSTICK:
+            case DI8DEVTYPE_JOYSTICK:
                 {
                     TRef<JoystickInputStreamImpl> pjoystickInputStream = 
                         new JoystickInputStreamImpl(pdid2, m_hwnd);
@@ -1325,12 +1325,13 @@ public:
 			g_pdfDIMouse = (DIDATAFORMAT*)::GetProcAddress(m_hdinput, "c_dfDIMouse2");		// mdvalley: Mouse2 for more buttons
             ZAssert(g_pdfDIMouse != NULL);
         #else
-            DDCall(DirectInputCreate(
-                GetModuleHandle(NULL), 
-                DIRECTINPUT_VERSION, 
-                &m_pdi, 
-                NULL
-            ));
+		DDCall(DirectInput8Create( // KG - Di8 update
+			GetModuleHandle(NULL),
+			DIRECTINPUT_VERSION,
+			IID_IDirectInput8,
+			(LPVOID*)&m_pdi,
+			NULL
+		));
 
 //            g_pdfDIMouse = &c_dfDIMouse;
 			g_pdfDIMouse = &c_dfDIMouse2;		// mdvalley: Mouse2 for more buttons

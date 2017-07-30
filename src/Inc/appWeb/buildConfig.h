@@ -15,14 +15,14 @@
 #define BLD_VERSION "2.4.2"
 #define BLD_NUMBER "2"
 #define BLD_TYPE "RELEASE"
-#define BLD_DEFAULTS "release"
-#define BLD_PACKAGES "matrixssl openssl php5"
+#define BLD_DEFAULTS "standard"
+#define BLD_PACKAGES ""
 #define BLD_MBEDTHIS 1
-#define BLD_REQUIRED_TOOLS "AR CC CXX LD LDXX MT"
+#define BLD_REQUIRED_TOOLS "AR CC CXX LD LDXX"
 #define BLD_OPTIONAL_TOOLS ""
 #define BLD_REQUIRED_SDKS ""
 #define BLD_OPTIONAL_SDKS ""
-#define BLD_REQUIRED_BUILD_TOOLS "AR CC CXX LD LDXX MT"
+#define BLD_REQUIRED_BUILD_TOOLS "AR CC CXX LD LDXX"
 #define BLD_OPTIONAL_BUILD_TOOLS "DOXYGEN PKG"
 #define BLD_REQUIRED_BUILD_SDKS ""
 #define BLD_OPTIONAL_BUILD_SDKS ""
@@ -32,14 +32,14 @@
 #define BLD_CLEAN_INSTALL "0"
 #define BLD_LICENSE "gpl"
 #define BLD_COMMERCIAL "0"
-#define BLD_HOST_SYSTEM "i686-pc-win"
+#define BLD_HOST_SYSTEM "x86_64-pc-win"
 #define BLD_BUILD_SYSTEM "i686-pc-win"
-#define BLD_CROSS "0"
+#define BLD_CROSS "1"
 #define BLD_HOST_OS "WIN"
-#define BLD_HOST_CPU_ARCH MPR_CPU_IX86
-#define BLD_HOST_CPU "i686"
-#define BLD_HOST_CPU_UPPER "I686"
-#define BLD_HOST_CPU_MODEL "686"
+#define BLD_HOST_CPU_ARCH MPR_CPU_IX64
+#define BLD_HOST_CPU "x86_64"
+#define BLD_HOST_CPU_UPPER "X86_64"
+#define BLD_HOST_CPU_MODEL "86_64"
 #define BLD_HOST_DIST "xp"
 #define BLD_HOST_DIST_VER "5"
 #define BLD_HOST_UNIX 0
@@ -51,50 +51,50 @@
 #define BLD_BUILD_CPU_MODEL 686
 #define BLD_BUILD_UNIX 0
 #define BLD_BUILD_WIN 1
-#define BLD_ROOT_PREFIX "c:/"
-#define BLD_PREFIX "c:/Program Files/Mbedthis Appweb"
-#define BLD_DOC_PREFIX "c:/Program Files/Mbedthis Appweb"
-#define BLD_INC_PREFIX "c:/Program Files/Mbedthis Appweb/include/appweb"
-#define BLD_LIB_PREFIX "c:/Program Files/Mbedthis Appweb/lib"
-#define BLD_LOG_PREFIX "c:/Program Files/Mbedthis Appweb/logs"
-#define BLD_MAN_PREFIX "c:/Program Files/Mbedthis Appweb"
-#define BLD_SAM_PREFIX "c:/Program Files/Mbedthis Appweb/samples"
-#define BLD_SBIN_PREFIX "c:/Program Files/Mbedthis Appweb/bin"
-#define BLD_SRC_PREFIX "c:/Program Files/Mbedthis Appweb/src"
+#define BLD_ROOT_PREFIX "E:/cygwin"
+#define BLD_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb"
+#define BLD_DOC_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb"
+#define BLD_INC_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/include/appweb"
+#define BLD_LIB_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/lib"
+#define BLD_LOG_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/logs"
+#define BLD_MAN_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb"
+#define BLD_SAM_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/samples"
+#define BLD_SBIN_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/bin"
+#define BLD_SRC_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/src"
 #define BLD_HOST_CC_MTUNE 0
 #define BLD_HOST_CC_STACK_PROTECTOR 0
 #define BLD_HOST_CC_MSCL 0
-#define BLD_HOST_CC_CL_VERSION 15
+#define BLD_HOST_CC_CL_VERSION 12
 #define BLD_BUILD_CC_MTUNE 0
 #define BLD_BUILD_CC_STACK_PROTECTOR 0
 #define BLD_BUILD_CC_MSCL 0
-#define BLD_BUILD_CC_CL_VERSION 15
-#define BLD_MOD_PREFIX "c:/Program Files/Mbedthis Appweb/lib/modules"
-#define BLD_WEB_PREFIX "c:/appweb/web"
+#define BLD_BUILD_CC_CL_VERSION 12
+#define BLD_MOD_PREFIX "E:/cygwin/Program Files/Mbedthis Appweb/lib/modules"
+#define BLD_WEB_PREFIX "E:/cygwin/appweb/web"
 #define BLD_APPWEB 1
 #define BLD_HTTP_PORT 7777
 #define BLD_SSL_PORT 4443
 #define BLD_APPWEB_CONFIG "standard.conf"
 #define BLD_FEATURE_ACCESS_LOG 1
-#define BLD_FEATURE_ADMIN_MODULE 1
+#define BLD_FEATURE_ADMIN_MODULE 0
 #define BLD_FEATURE_ASPNET_MODULE 0
 #define BLD_FEATURE_ASSERT 0
-#define BLD_FEATURE_AUTH_MODULE 1
-#define BLD_FEATURE_C_API_MODULE 1
+#define BLD_FEATURE_AUTH_MODULE 0
+#define BLD_FEATURE_C_API_MODULE 0
 #define BLD_FEATURE_C_API_CLIENT 1
-#define BLD_FEATURE_CGI_MODULE 1
+#define BLD_FEATURE_CGI_MODULE 0
 #define BLD_FEATURE_DIR_MODULE 0
-#define BLD_FEATURE_DOC 1
+#define BLD_FEATURE_DOC 0
 #define BLD_FEATURE_CMD_EXEC 1
 #define BLD_FEATURE_GACOMPAT_MODULE 0
 #define BLD_FEATURE_CONFIG_PARSE 1
 #define BLD_FEATURE_CONFIG_SAVE 0
 #define BLD_FEATURE_COOKIE 1
-#define BLD_FEATURE_COPY_MODULE 1
+#define BLD_FEATURE_COPY_MODULE 0
 #define BLD_FEATURE_DIGEST 1
-#define BLD_FEATURE_EGI_MODULE 1
+#define BLD_FEATURE_EGI_MODULE 0
 #define BLD_FEATURE_EJS 1
-#define BLD_FEATURE_ESP_MODULE 1
+#define BLD_FEATURE_ESP_MODULE 0
 #define BLD_FEATURE_EVAL_PERIOD 30
 #define BLD_FEATURE_FLOATING_POINT 1
 #define BLD_FEATURE_IF_MODIFIED 1
@@ -115,69 +115,65 @@
 #define BLD_FEATURE_SAFE_STRINGS 0
 #define BLD_FEATURE_SAMPLES 1
 #define BLD_FEATURE_SESSION 1
-#define BLD_FEATURE_SHARED 1
+#define BLD_FEATURE_SHARED 0
 #define BLD_FEATURE_SQUEEZE 0
-#define BLD_FEATURE_SSL_MODULE 1
+#define BLD_FEATURE_SSL_MODULE 0
 #define BLD_FEATURE_STATIC 1
 #define BLD_FEATURE_STATIC_LINK_LIBC 0
-#define BLD_FEATURE_TEST 1
-#define BLD_FEATURE_UPLOAD_MODULE 1
+#define BLD_FEATURE_TEST 0
+#define BLD_FEATURE_UPLOAD_MODULE 0
 #define BLD_FEATURE_SERVICES 1
-#define BLD_FEATURE_ADMIN_MODULE_BUILTIN 0
+#define BLD_FEATURE_ADMIN_MODULE_BUILTIN 1
 #define BLD_FEATURE_ASPNET_MODULE_BUILTIN 0
-#define BLD_FEATURE_AUTH_MODULE_BUILTIN 0
-#define BLD_FEATURE_C_API_MODULE_BUILTIN 0
-#define BLD_FEATURE_CGI_MODULE_BUILTIN 0
-#define BLD_FEATURE_DIR_MODULE_BUILTIN 0
+#define BLD_FEATURE_AUTH_MODULE_BUILTIN 1
+#define BLD_FEATURE_C_API_MODULE_BUILTIN 1
+#define BLD_FEATURE_CGI_MODULE_BUILTIN 1
+#define BLD_FEATURE_DIR_MODULE_BUILTIN 1
 #define BLD_FEATURE_GACOMPAT_MODULE_BUILTIN 0
-#define BLD_FEATURE_COPY_MODULE_BUILTIN 0
-#define BLD_FEATURE_EGI_MODULE_BUILTIN 0
-#define BLD_FEATURE_ESP_MODULE_BUILTIN 0
-#define BLD_FEATURE_SSL_MODULE_BUILTIN 0
-#define BLD_FEATURE_PUT_MODULE_BUILTIN 0
-#define BLD_FEATURE_UPLOAD_MODULE_BUILTIN 0
-#define BLD_FEATURE_ADMIN_MODULE_LOADABLE 1
+#define BLD_FEATURE_COPY_MODULE_BUILTIN 1
+#define BLD_FEATURE_EGI_MODULE_BUILTIN 1
+#define BLD_FEATURE_ESP_MODULE_BUILTIN 1
+#define BLD_FEATURE_SSL_MODULE_BUILTIN 1
+#define BLD_FEATURE_PUT_MODULE_BUILTIN 1
+#define BLD_FEATURE_UPLOAD_MODULE_BUILTIN 1
+#define BLD_FEATURE_ADMIN_MODULE_LOADABLE 0
 #define BLD_FEATURE_ASPNET_MODULE_LOADABLE 0
-#define BLD_FEATURE_AUTH_MODULE_LOADABLE 1
-#define BLD_FEATURE_C_API_MODULE_LOADABLE 1
-#define BLD_FEATURE_CGI_MODULE_LOADABLE 1
-#define BLD_FEATURE_DIR_MODULE_LOADABLE 1
+#define BLD_FEATURE_AUTH_MODULE_LOADABLE 0
+#define BLD_FEATURE_C_API_MODULE_LOADABLE 0
+#define BLD_FEATURE_CGI_MODULE_LOADABLE 0
+#define BLD_FEATURE_DIR_MODULE_LOADABLE 0
 #define BLD_FEATURE_GACOMPAT_MODULE_LOADABLE 0
-#define BLD_FEATURE_COPY_MODULE_LOADABLE 1
-#define BLD_FEATURE_EGI_MODULE_LOADABLE 1
-#define BLD_FEATURE_ESP_MODULE_LOADABLE 1
-#define BLD_FEATURE_SSL_MODULE_LOADABLE 1
-#define BLD_FEATURE_PUT_MODULE_LOADABLE 1
-#define BLD_FEATURE_UPLOAD_MODULE_LOADABLE 1
+#define BLD_FEATURE_COPY_MODULE_LOADABLE 0
+#define BLD_FEATURE_EGI_MODULE_LOADABLE 0
+#define BLD_FEATURE_ESP_MODULE_LOADABLE 0
+#define BLD_FEATURE_SSL_MODULE_LOADABLE 0
+#define BLD_FEATURE_PUT_MODULE_LOADABLE 0
+#define BLD_FEATURE_UPLOAD_MODULE_LOADABLE 0
 #define BLD_MOD_DIR "${BLD_TOP}/lib/modules"
-#define BLD_HOST_AR "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/lib"
-#define BLD_HOST_AR_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/lib"
-#define BLD_HOST_CC "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_HOST_CC_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_HOST_CXX "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_HOST_CXX_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_HOST_LD "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_HOST_LD_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_HOST_LDXX "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_HOST_LDXX_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_HOST_MT "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/PlatformSDK/bin/mt"
-#define BLD_HOST_MT_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/PlatformSDK/bin/mt"
-#define BLD_BUILD_AR "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/lib"
-#define BLD_BUILD_AR_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/lib"
-#define BLD_BUILD_CC "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_BUILD_CC_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_BUILD_CXX "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_BUILD_CXX_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/cl"
-#define BLD_BUILD_LD "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_BUILD_LD_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_BUILD_LDXX "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_BUILD_LDXX_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/VC/bin/link"
-#define BLD_BUILD_MT "/cygdrive/c/Program Files/Microsoft Visual Studio 9.0/PlatformSDK/bin/mt"
-#define BLD_BUILD_MT_DOSPATH "c:/Program Files/Microsoft Visual Studio 9.0/PlatformSDK/bin/mt"
-#define BLD_BUILD_DOXYGEN "/bin/doxygen"
-#define BLD_BUILD_DOXYGEN_DOSPATH "c:/bin/doxygen"
-#define BLD_BUILD_PKG "/cygdrive/c/Program Files/Inno Setup 5/iscc"
-#define BLD_BUILD_PKG_DOSPATH "c:/Program Files/Inno Setup 5/iscc"
+#define BLD_HOST_AR "/cygdrive/G/VS10/VC/bin/lib"
+#define BLD_HOST_AR_DOSPATH "G:/VS10/VC/bin/lib"
+#define BLD_HOST_CC "/cygdrive/G/VS10/VC/bin/cl"
+#define BLD_HOST_CC_DOSPATH "G:/VS10/VC/bin/cl"
+#define BLD_HOST_CXX "/cygdrive/G/VS10/VC/bin/cl"
+#define BLD_HOST_CXX_DOSPATH "G:/VS10/VC/bin/cl"
+#define BLD_HOST_LD "/cygdrive/G/VS10/VC/bin/link"
+#define BLD_HOST_LD_DOSPATH "G:/VS10/VC/bin/link"
+#define BLD_HOST_LDXX "/cygdrive/G/VS10/VC/bin/link"
+#define BLD_HOST_LDXX_DOSPATH "G:/VS10/VC/bin/link"
+#define BLD_BUILD_AR "/cygdrive/G/VS10/VC/bin/lib"
+#define BLD_BUILD_AR_DOSPATH "G:/VS10/VC/bin/lib"
+#define BLD_BUILD_CC "/cygdrive/G/VS10/VC/bin/cl"
+#define BLD_BUILD_CC_DOSPATH "G:/VS10/VC/bin/cl"
+#define BLD_BUILD_CXX "/cygdrive/G/VS10/VC/bin/cl"
+#define BLD_BUILD_CXX_DOSPATH "G:/VS10/VC/bin/cl"
+#define BLD_BUILD_LD "/cygdrive/G/VS10/VC/bin/link"
+#define BLD_BUILD_LD_DOSPATH "G:/VS10/VC/bin/link"
+#define BLD_BUILD_LDXX "/cygdrive/G/VS10/VC/bin/link"
+#define BLD_BUILD_LDXX_DOSPATH "G:/VS10/VC/bin/link"
+#define BLD_BUILD_DOXYGEN ""
+#define BLD_BUILD_DOXYGEN_DOSPATH ""
+#define BLD_BUILD_PKG ""
+#define BLD_BUILD_PKG_DOSPATH ""
 #define BLD_BUILD_CFLAGS ""
 #define BLD_HOST_CFLAGS ""
 #define BLD_BUILD_CXXFLAGS ""
@@ -209,35 +205,5 @@
 #define BLD_LIB_DIR "${BLD_TOP}/lib"
 #define BLD_INC_DIR "${BLD_TOP}/include"
 #define BLD_EXP_OBJ_DIR "${BLD_TOP}/obj"
-#define BLD_FEATURE_MATRIXSSL_MODULE 1
-#define BLD_FEATURE_MATRIXSSL_MODULE_LOADABLE 1
-#define BLD_FEATURE_MATRIXSSL_MODULE_BUILTIN 0
-#define BLD_MATRIXSSL_DIR "${BLD_TOP}/../../packages/matrixssl/matrixssl-1-8-2"
-#define BLD_MATRIXSSL_LIBPATH "${BLD_TOP}/../../packages/matrixssl/matrixssl-1-8-2/src/release"
-#define BLD_MATRIXSSL_LIBS "matrixssl"
-#define BLD_MATRIXSSL_IFLAGS "-Ic:/usr/src/buildFarm/appweb.release/../../packages/matrixssl/matrixssl-1-8-2"
-#define BLD_MATRIXSSL_CFLAGS ""
-#define BLD_MATRIXSSL_JFLAGS ""
-#define BLD_MATRIXSSL_LDFLAGS ""
-#define BLD_FEATURE_OPENSSL_MODULE 1
-#define BLD_FEATURE_OPENSSL_MODULE_LOADABLE 1
-#define BLD_FEATURE_OPENSSL_MODULE_BUILTIN 0
-#define BLD_OPENSSL_DIR "${BLD_TOP}/../../packages/openssl/openssl-0.9.8d"
-#define BLD_OPENSSL_LIBPATH "${BLD_TOP}/../../packages/openssl/openssl-0.9.8d/out32dll"
-#define BLD_OPENSSL_LIBS "libeay32 ssleay32"
-#define BLD_OPENSSL_IFLAGS "-Ic:/usr/src/buildFarm/appweb.release/../../packages/openssl/openssl-0.9.8d/inc32"
-#define BLD_OPENSSL_CFLAGS ""
-#define BLD_OPENSSL_JFLAGS ""
-#define BLD_OPENSSL_LDFLAGS ""
-#define BLD_FEATURE_PHP5_MODULE 1
-#define BLD_FEATURE_PHP5_MODULE_LOADABLE 1
-#define BLD_FEATURE_PHP5_MODULE_BUILTIN 0
-#define BLD_PHP5_DIR "${BLD_TOP}/../../packages/php/php-5.2.0"
-#define BLD_PHP5_LIBPATH "${BLD_TOP}/../../packages/php/php-5.2.0/release_ts"
-#define BLD_PHP5_LIBS "php5ts"
-#define BLD_PHP5_IFLAGS "-Ic:/usr/src/buildFarm/appweb.release/../../packages/php/php-5.2.0 -Ic:/usr/src/buildFarm/appweb.release/../../packages/php/php-5.2.0/main -Ic:/usr/src/buildFarm/appweb.release/../../packages/php/php-5.2.0/Zend -Ic:/usr/src/buildFarm/appweb.release/../../packages/php/php-5.2.0/TSRM"
-#define BLD_PHP5_CFLAGS ""
-#define BLD_PHP5_JFLAGS ""
-#define BLD_PHP5_LDFLAGS ""
 
 #endif /* BLD_ALTERNATE_CONFIG */

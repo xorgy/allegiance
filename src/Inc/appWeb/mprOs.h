@@ -315,11 +315,7 @@ extern "C" {
 //////////////////////////////// General Defines ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-	//imago
-#pragma warning(disable:4005)
 #define	MAXINT			INT_MAX
-#pragma warning(default:4005)
-
 #define BITS(type)		(BITSPERBYTE * (int) sizeof(type))
 
 #ifndef max
@@ -635,10 +631,10 @@ typedef char	*MprStr;					// Used for dynamic strings
 	#define getpid 	_getpid
 	#define open 	_open
 	#define putenv 	_putenv
-//	#define read 	_read //Imago -conflicts with ATL
+	//#define read 	_read Imago 6/20/09
 	#define stat 	_stat
 	#define umask 	_umask
-//	#define unlink 	_unlink //Imago -conflicts with ATL
+	//#define unlink 	_unlink Imago - these interfere with our solution, it's ok just to rip 'em out
 	#define write 	_write
 	#define strdup 	_strdup
 	#define lseek 	_lseek

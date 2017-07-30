@@ -7,7 +7,7 @@
 #include "pch.h"
 #include "ddraw.h"
 #include "d3d.h"
-#include "d3drm.h"
+//#include "d3drm.h"
 #include "dinput.h"
 
 #ifdef _DEBUG
@@ -459,7 +459,7 @@ HRESULTInfo gpinfo[] =
     /*** Direct3D Retained-Mode Errors ***/
     /*************************************/
 
-    {D3DRMERR_BADOBJECT, "D3DRMERR_BADOBJECT",
+    /*{D3DRMERR_BADOBJECT, "D3DRMERR_BADOBJECT",
         "Object expected in argument"},
 
     {D3DRMERR_BADTYPE, "D3DRMERR_BADTYPE",
@@ -496,7 +496,7 @@ HRESULTInfo gpinfo[] =
         "Bad DLL minor version"},
 
     {D3DRMERR_UNABLETOEXECUTE, "D3DRMERR_UNABLETOEXECUTE",
-        "Unable to carry out procedure"},
+        "Unable to carry out procedure"},*/
 
     //
     // DirectInput errors
