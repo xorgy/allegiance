@@ -529,34 +529,46 @@ void StringPane::Paint(Surface* psurface)
 {
     ZString strClipped;
 
-    if (m_bClipped) {
-        if (m_justification == JustifyRight() || m_justification == JustifyLeftClipRight())
-            strClipped = m_str.Right(GetFont()->GetMaxTextLength(m_str, m_ptSize.X(), false));
-        else
-            strClipped =  m_str.Left(GetFont()->GetMaxTextLength(m_str, m_ptSize.X(), true ));
-    } else {
-        strClipped = m_str;
-    }
+	if (m_bClipped) 
+	{
+		if (m_justification == JustifyRight() || m_justification == JustifyLeftClipRight())
+		{
+			strClipped = m_str.Right(GetFont()->GetMaxTextLength(m_str, m_ptSize.X(), false));
+		}
+		else
+		{
+			strClipped = m_str.Left(GetFont()->GetMaxTextLength(m_str, m_ptSize.X(), true ));
+		}
+	} 
+	else 
+	{
+		strClipped = m_str;
+	}
 
-    int nXStart;
+	int nXStart;
 
-    if (m_justification == JustifyRight()) {
-        ZAssert(m_bClipped);
-        nXStart = m_ptSize.X() - m_pfont->GetTextExtent(strClipped).X();
-    } else if (m_justification == JustifyCenter()) {
-        ZAssert(m_bClipped);
-        nXStart = (m_ptSize.X() - m_pfont->GetTextExtent(strClipped).X())/2;
-    } else {
-        ZAssert(m_justification == JustifyLeft() || m_justification == JustifyLeftClipRight());
-        nXStart = 0;
-    }
+	if (m_justification == JustifyRight())
+	{
+		ZAssert(m_bClipped);
+		nXStart = m_ptSize.X() - m_pfont->GetTextExtent(strClipped).X();
+	} 
+	else if (m_justification == JustifyCenter()) 
+	{
+		ZAssert(m_bClipped);
+		nXStart = (m_ptSize.X() - m_pfont->GetTextExtent(strClipped).X())/2;
+	}
+	else 
+	{
+		ZAssert(m_justification == JustifyLeft() || m_justification == JustifyLeftClipRight());
+		nXStart = 0;
+	}
 
-    psurface->DrawString(
-        m_pfont, 
-        IsSelected() ? m_textColorSelected : m_textColor,
-        WinPoint(nXStart, 0), 
-        strClipped
-    );
+	psurface->DrawString(
+		m_pfont,
+		IsSelected() ? m_textColorSelected : m_textColor,
+		WinPoint(nXStart, 0),
+		strClipped
+	);
 }
 
 void StringPane::SetString(const ZString& str)
@@ -823,11 +835,11 @@ public:
 
     void Paint(Surface* psurface)
     {
-        psurface->DrawString(m_pfont, m_textColor, WinPoint(0, 0), m_strClipped);
+		psurface->DrawString(m_pfont, m_textColor, WinPoint(0, 0), m_strClipped);
 
-        //
-        // Draw the cursor
-        //
+		//
+		// Draw the cursor
+		//
 
         WinPoint size = m_pfont->GetTextExtent(m_strClipped);
 

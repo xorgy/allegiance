@@ -245,7 +245,6 @@
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Inc\AGCIDL.idl" />
-    <Midl Include="agc.idl" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="AGC.rc2" />

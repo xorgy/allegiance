@@ -310,6 +310,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="mask.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="olddxdefns.h" />
     <ClInclude Include="orientation.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="point.h" />

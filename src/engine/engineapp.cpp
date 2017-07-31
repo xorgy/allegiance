@@ -12,10 +12,6 @@ HRESULT EngineApp::Initialize(const ZString& strCommandLine)
     // Initialize the pane code
     //
 
-    // KGJV 32B - FreeImage Lib
-    FreeImage_Initialise();
-
-
     Pane::Initialize();
 
     //
@@ -61,9 +57,6 @@ void EngineApp::Terminate()
 
     m_pmodeler = NULL;
     m_pengine = NULL;
-
-    // KGJV 32B - FreeImage
-    FreeImage_DeInitialise();
 
     Win32App::Terminate();
 }

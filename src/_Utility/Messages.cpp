@@ -726,7 +726,7 @@ HRESULT FedMessaging::OnSysMessage( const DPlayMsg& msg )
     HRESULT hr = m_pDirectPlayServer->GetClientInfo( lp->dpnidPlayer, pPlayerInfo,
                                           &dwSize, 0);
 
-    //assert( hr == DPNERR_BUFFERTOOSMALL );  Imago commented out for now?
+    assert( hr == DPNERR_BUFFERTOOSMALL );
     pPlayerInfo = (DPN_PLAYER_INFO*) new BYTE[dwSize];
     ZeroMemory( pPlayerInfo, dwSize );
     pPlayerInfo->dwSize = sizeof( DPN_PLAYER_INFO );
@@ -770,7 +770,7 @@ HRESULT FedMessaging::OnSysMessage( const DPlayMsg& msg )
 
     CFMConnection * pcnxn = GetConnectionFromDpid( lp->dpnidPlayer );
 
-    debugf("(FM=%8x %s) DESTROY Player for %s (%u)\n", this, sOrC, pcnxn ? pcnxn->GetName() : "<unknown>" , lp->dpnidPlayer );
+    //debugf("(FM=%8x %s) DESTROY Player for %s (%u)\n", this, sOrC, pcnxn ? pcnxn->GetName() : "<unknown>" , lp->dpnidPlayer );
 
     // if your player dies, or the server dies, you're SOL--not much point in
     // waiting until dplay gets around to telling the session is dead,
@@ -938,7 +938,7 @@ HRESULT FedMessaging::MsgHandler( DWORD dwMessageId, PVOID pMsgBuffer )
   default:
     //  <NKM> 09-Aug-2004
     // Don't care about others for now... log and return
-     debugf("***** (FM=%8x %s) Unhandled DPlay message, type %8x *****\n", this, sOrC, dwMessageId);
+    // debugf("***** (FM=%8x %s) Unhandled DPlay message, type %8x *****\n", this, sOrC, dwMessageId);
     return DPN_OK;
   }
 
@@ -1013,10 +1013,10 @@ HRESULT FedMessaging::ReceiveMessages()
             {
               if(pfm->fmid > 0 && pfm->cbmsg >= sizeof(FEDMESSAGE) && pfm->cbmsg <= PacketSize())
               {
-                debugf( "(FM=%8x %s) Msg from %s(%8x) cbmsg=%d, fmid=%d, total packet size=%d\n",
-                        this, sOrC,
-                        pcnxnFrom ? pcnxnFrom->GetName() : "<unknown>", p_dpMsg->dpnidSender,
-                       cb, id, m_dwcbPacket );
+               // debugf( "(FM=%8x %s) Msg from %s(%8x) cbmsg=%d, fmid=%d, total packet size=%d\n",
+               //         this, sOrC,
+               //         pcnxnFrom ? pcnxnFrom->GetName() : "<unknown>", p_dpMsg->dpnidSender,
+               //        cb, id, m_dwcbPacket );
 
                 m_pfmSite->OnAppMessage(this, *pcnxnFrom, pfm);
                 pfm = PfmGetNext(pfm);
@@ -1046,8 +1046,8 @@ HRESULT FedMessaging::ReceiveMessages()
         }
         else
         {
-          debugf("(FM=%8x %s) Warning: Ignoring message from dpid %u who doesn't have an associated CFMConnection\n",
-                 this, sOrC, p_dpMsg->dpnidSender );
+          //debugf("(FM=%8x %s) Warning: Ignoring message from dpid %u who doesn't have an associated CFMConnection\n",
+          //       this, sOrC, p_dpMsg->dpnidSender );
         }
 
         if ( m_pDirectPlayClient != 0 )
@@ -1627,7 +1627,6 @@ HRESULT FedMessaging::GetIPAddress(CFMConnection & cnxn, char szRemoteAddress[16
 	  }
   }
 
-
   WCHAR add[200];
   DWORD cnt = 200;
   DWORD type;
@@ -1965,14 +1964,14 @@ CFMConnection::CFMConnection(FedMessaging * pfm, const char * szName, DPID dpid)
     m_dwPrivate(0)
 {
   assert(GetDPID() == dpid);
-  debugf("CFMConnection: pfm=%8x dpid=%8x, name=%s, playerdata(this)=%p\n", pfm, dpid, szName, this );
+  // debugf("CFMConnection: pfm=%8x dpid=%8x, name=%s, playerdata(this)=%p\n", pfm, dpid, szName, this );
 }
 
 
 void CFMConnection::Delete(FedMessaging * pfm) // basically the destructor, but with a parameter
 {
-  debugf("Deleting connection: pfm=%8x dpid=%8x, name=%s, playerdata=%p, private=%u\n",
-         pfm, GetDPID(), GetName(), this, m_dwPrivate);
+  //debugf("Deleting connection: pfm=%8x dpid=%8x, name=%s, playerdata=%p, private=%u\n",
+  //       pfm, GetDPID(), GetName(), this, m_dwPrivate);
   // Don't want to hear anything more from this player
   static CTempTimer tt("in DestroyPlayer/SetPlayerData", 0.02f);
   tt.Start();
@@ -2011,7 +2010,7 @@ CFMGroup::CFMGroup(FedMessaging * pfm, const char * szName)
   dpn.pwszName = constChar2Wchar( szName );
   ZSucceeded( pfm->GetDPlayServer()->CreateGroup( &dpn, this, NULL, NULL, DPNOP_SYNC ) );
 
-  debugf("CFMGroup: pfm=%8x dpid=%8x, name=%s, playerdata(this)=%p, ", pfm, GetDPID(), szName, this );
+  //debugf("CFMGroup: pfm=%8x dpid=%8x, name=%s, playerdata(this)=%p, ", pfm, GetDPID(), szName, this );
 
   delete[] dpn.pwszName;
 }

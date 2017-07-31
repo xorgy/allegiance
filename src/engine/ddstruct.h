@@ -1,6 +1,8 @@
 #ifndef _ddstruct_h_
 #define _ddstruct_h_
 
+#include <d3dtypes.h>
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Zero fill for structs with a dwSize member

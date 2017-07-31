@@ -486,10 +486,10 @@ public:
         TRef<Surface> psurface = GetImage()->GetSurface();
         float         number   = GetNumber()->GetValue();
 
-        number = bound(number, 0.0f, 1.0f);
+		// kg - fix NaN & infinity to avoid odd rendering
+		if (_isnan(number) || !_finite(number)) number = 0.0f;
 
-		// KGJV - fix: NaN value to 0
-		if (_isnan(number)) number = 0.0f;
+        number = bound(number, 0.0f, 1.0f);
 
         Rect  rect = m_rect;
         Point offset(0, 0);
@@ -571,6 +571,15 @@ AnimatedImage::AnimatedImage(Number* ptime, AnimatedImage* pimage) :
 {
 }
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// AnimatedImage()
+// Create the resources for an animated image.
+// The original source for the animated image in psurfaceSource, which is one large image.
+// The original image is then broken up into square frames, and stored as individual textures, which
+// are then added the m_psurfaces list.
+////////////////////////////////////////////////////////////////////////////////////////////////////
 AnimatedImage::AnimatedImage(Number* ptime, Surface* psurfaceSource, int nRows, int nCols) :
     Image(ptime),
     m_index(0)

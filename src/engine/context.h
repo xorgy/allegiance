@@ -1,6 +1,8 @@
 #ifndef _context_h_
 #define _context_h_
 
+#include <d3dtypes.h>
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Plane
@@ -315,7 +317,7 @@ public:
     }
 #endif
 
-inline Color MakeColor(const D3DCOLORVALUE& color)
+inline Color MakeColor(const COLORVALUE& color)
 {
     return
         Color(

@@ -1,6 +1,8 @@
 #ifndef _enginep_h_
 #define _enginep_h_
 
+#include <d3d.h>
+
 // KGJV 32 B - FreeImage lib
 //#define FREEIMAGE_LIB 1
 #include "FreeImage/FreeImage.h"

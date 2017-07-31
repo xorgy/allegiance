@@ -106,6 +106,9 @@ protected:
     bool                       m_bRestore;
     bool                       m_bMouseInside;
     bool                       m_bMoveOnHide;
+	bool						m_bStartFullScreen;
+	bool						m_bWindowStateMinimised;
+	bool						m_bWindowStateRestored;
 
     int                        m_modeIndex;
 

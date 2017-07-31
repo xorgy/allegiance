@@ -1,6 +1,8 @@
 
 #include "pch.h"
 
+#include <stdio.h> 
+
 
 CTechItemList gCivList;
 CTechItemList gItemList;
@@ -64,7 +66,7 @@ VOID GetLine(CHAR * szValid, DWORD dwMax, CHAR * pch, DWORD * pdw)
 
     do
     {
-        gets(s);
+        gets_s(s);
         pchStart = s;
         while(' ' == *pchStart)
             pchStart++;

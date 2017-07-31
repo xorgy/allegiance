@@ -1,1 +1,13 @@
 .vs/
+*.obj
+*.tlog
+*.ilk
+*.log
+*.pdb
+objs/
+*.bak
+*.tlb
+*.vcxproj.user
+/wasp*.zip
+/mkzip.bat
+

@@ -12,6 +12,7 @@
 //
 
 #include "engine.h"
+#include "enginep.h"
 
 #ifdef USEDX7
 #define FixPermedia 1

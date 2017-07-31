@@ -496,21 +496,22 @@ public:
 		/*{
 			HRESULT hr = FirstRunEula(pathStr);
 		
-			if (hr == E_FAIL)
-			{
-				::MessageBox(NULL, "Error while trying to load ebueula.dll. Please reboot and retry.  If it still fails, reinstall Allegiance", "Initialization Error", MB_OK);
-				return S_FALSE;
-			}
-			else if (hr == S_FALSE) 
-			{
-				::MessageBox(NULL, "You must accept the End User License Agreement before playing the Allegiance", "Allegiance", MB_OK);
-				return S_FALSE;
-			}
-			else
-			{
-				assert(hr == S_OK);
-			}
-		}*/
+          if (hr == E_FAIL)
+          {
+              ::MessageBox(NULL, "Error while trying to load ebueula.dll. Please reboot and retry.  If it still fails, reinstall Allegiance", "Initialization Error", MB_OK);
+              return S_FALSE;
+          }
+          else
+          if (hr == S_FALSE) 
+          {
+              ::MessageBox(NULL, "You must accept the End User License Agreement before playing the Allegiance", "Allegiance", MB_OK);
+              return S_FALSE;
+          }
+          else
+          {
+            assert(hr == S_OK);
+          }
+        }*/
 
 #ifndef BUILD_DX9
         //

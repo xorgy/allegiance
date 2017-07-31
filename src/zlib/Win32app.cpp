@@ -150,7 +150,6 @@ void retailf(const char* format, ...)
 {
     if (g_bOutput)
     {
-#ifndef DREAMCAST        
         const size_t size = 2048; //Avalance: Changed to log longer messages. (From 512)
         char         bfr[size];
 
@@ -160,9 +159,6 @@ void retailf(const char* format, ...)
         va_end(vl);
 
         ZDebugOutputImpl(bfr);
-#else
-        ZDebugOutputImpl(format);
-#endif
     }
 }
 
@@ -246,7 +242,6 @@ extern bool g_bOutput = true;
     {
         if (g_bOutput)
         {
-#ifndef DREAMCAST        
             const size_t size = 2048; //Avalanche: Changed to handle longer messages (from 512)
             char         bfr[size];
 
@@ -256,15 +251,11 @@ extern bool g_bOutput = true;
             va_end(vl);
 
             ZDebugOutputImpl(bfr);
-#else
-            ZDebugOutputImpl(format);
-#endif
         }
     }
 
     void InitializeDebugf()
     {
-#ifndef DREAMCAST        
         HKEY hKey;
         DWORD dwType;
         char  szValue[20];
@@ -327,17 +318,14 @@ extern bool g_bOutput = true;
                     NULL
                 );
         }
-#endif
     }
 
     void TerminateDebugf()
     {
-#ifndef DREAMCAST        
         if (g_logfile) {
             CloseHandle(g_logfile);
             g_logfile = NULL;
         }
-#endif
     }
 #endif  // SRVLOG or _DEBUG
 

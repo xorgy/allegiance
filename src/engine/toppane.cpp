@@ -157,6 +157,15 @@ Point TopPane::GetPanePoint(const Point& point)
         );
 }
 
+void TopPane::MouseEnter(IInputProvider* pprovider, const Point& point)
+{ 
+//	m_bInside = true;
+/*	if( m_psurface->GetSurfaceType().Test( SurfaceTypeDummy() ) == false )
+	{
+		OutputDebugString("MouseEnter\n");
+	}*/
+}
+
 MouseResult TopPane::HitTest(IInputProvider* pprovider, const Point& point, bool bCaptured)
 {
     return Pane::HitTest(pprovider, GetPanePoint(point), bCaptured);

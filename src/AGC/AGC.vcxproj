@@ -232,10 +232,10 @@
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>C:\faz\AGC;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>FLAVOR=\"$(ConfigurationName)\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PreLinkEvent>
-      <Command>
-      </Command>
+      <Command>lib /out:$(OutDir)\AGCGuid.lib $(OutDir)\AGCGuid.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>$(OutDir)AGCGuid.lib;$(OutDir)..\Test\TCLib\TCLib.lib;$(OutDir)..\ZLib\ZLib.lib;$(OutDir)..\_utility\Utility.lib;$(OutDir)..\igc\igc.lib;version.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -264,8 +264,8 @@
       <HeaderFileName>%(FileName).h</HeaderFileName>
     </Midl>
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Disabled</Optimization>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\AGC;..\ZLib;..\Igc;..\Inc;..\Test\Inc;$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SRVLOG;_ATL_STATIC_REGISTRY;_USRDLL;STRICT;_WINDOWS;WIN32;_AFXDLL;_HAS_IMMUTABLE_SETS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -279,9 +279,12 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ShowIncludes>false</ShowIncludes>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <ErrorReporting>None</ErrorReporting>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>FLAVOR=\"$(ConfigurationName)\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PreLinkEvent>
       <Command>lib /out:$(OutDir)AGCGuid.lib $(OutDir)AGCGuid.obj</Command>
@@ -296,6 +299,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FZDebugDX9|Win32'">
@@ -822,7 +826,6 @@ mc.exe -r $(OutDir) -h $(OutDir) $(OutDir)AGCEventsMC.mc
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Inc\AGCIDL.idl" />
-    <Midl Include="agc.idl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Igc\Igc2k10.vcxproj">

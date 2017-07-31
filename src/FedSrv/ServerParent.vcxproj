@@ -168,7 +168,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\guids;..\ZLib;..\_Utility;..\Igc;..\inc;..\AGC;..\Test\Inc;..\lobby;..\Zone;$(IntDir)..\Igc;$(IntDir)..\FedSrv;$(IntDir)..\AGC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\$(outdir)..\AGC;..\guids;..\ZLib;..\_Utility;..\Igc;..\inc;..\AGC;..\Test\Inc;..\lobby;..\Zone;$(IntDir)..\Igc;$(IntDir)..\FedSrv;$(IntDir)..\AGC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;_DEBUG;ALLSRV_STANDALONE;FEDSRV;AGC_HOST;_WIN32;_WINDOWS;_AFXDLL;_CONSOLE;WIN;_CRT_SECURE_NO_DEPRECATE;SRV_PARENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -199,6 +199,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FZRetail|Win32'">
@@ -210,7 +211,7 @@
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..\guids;..\ZLib;..\_Utility;..\Igc;..\inc;..\AGC;..\Test\Inc;..\lobby;..\Zone;$(IntDir)..\Igc;$(IntDir)..\FedSrv;$(IntDir)..\AGC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\$(outdir)..\AGC;..\guids;..\ZLib;..\_Utility;..\Igc;..\inc;..\AGC;..\Test\Inc;..\lobby;..\Zone;$(IntDir)..\Igc;$(IntDir)..\FedSrv;$(IntDir)..\AGC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ALLSRV_STANDALONE;FEDSRV;AGC_HOST;SRVLOG;_WIN32;_WINDOWS;_AFXDLL;_CONSOLE;WIN;SRV_PARENT;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -234,6 +235,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

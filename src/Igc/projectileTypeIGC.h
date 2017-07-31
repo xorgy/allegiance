@@ -16,6 +16,7 @@
 #ifndef __PROJECTILETYPEIGC_H_
 #define __PROJECTILETYPEIGC_H_
 
+
 /////////////////////////////////////////////////////////////////////////////
 // CprojectileTypeIGC
 class CprojectileTypeIGC : public IprojectileTypeIGC
@@ -90,7 +91,7 @@ class CprojectileTypeIGC : public IprojectileTypeIGC
         {
             return m_data.rotation;
         }
-        virtual D3DCOLORVALUE   GetColor(void) const
+        virtual COLORVALUE   GetColor(void) const
         {
             return m_data.color;
         }

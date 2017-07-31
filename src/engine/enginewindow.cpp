@@ -578,11 +578,23 @@ void EngineWindow::SetFullscreen(bool bFullscreen)
 
 bool EngineWindow::OnWindowPosChanging(WINDOWPOS* pwp)
 {
+	//char szBuffer[256];
+	//sprintf( szBuffer, "%d  %d,   %d %d\n", pwp->x, pwp->y, 
+	//	m_bWindowStateMinimised, m_bWindowStateRestored );
+	//OutputDebugString( szBuffer );
+
     if (GetFullscreen()) {
         pwp->x = 0;
         pwp->y = 0;
-    } else {
-        if (!m_bMovingWindow) {
+    } 
+	else 
+	{
+		// For some reason, when restoring a minimised window, it gets a position of
+		// -32000, -32000.
+		pwp->x = max( 0, pwp->x );
+		pwp->y = max( 0, pwp->y );
+        if (!m_bMovingWindow) 
+		{
             return Window::OnWindowPosChanging(pwp);
         }
     }
@@ -1116,7 +1128,7 @@ void EngineWindow::DoIdle()
 void EngineWindow::SetShowFPS(bool bFPS, const char* pszLabel)
 {
     if (pszLabel)
-        strncpy(m_pszLabel, pszLabel, sizeof(m_pszLabel) - 1);
+        strncpy_s(m_pszLabel, 20, pszLabel, sizeof(m_pszLabel) - 1);
     else
         m_pszLabel[0] = '\0';
 
@@ -1163,6 +1175,11 @@ bool EngineWindow::OnActivateApp(bool bActive)
             m_pmouse->SetEnabled(m_bActive && m_pengine->IsFullscreen());
         }
         m_pinputEngine->SetFocus(m_bActive);
+		
+		if( m_bActive == true )
+		{
+			SetActiveWindow( GetHWND() );
+		}
     }
 
     if (g_bWindowLog) {
@@ -1444,16 +1461,12 @@ void EngineWindow::SetCaption(ICaption* pcaption)
 
 void EngineWindow::OnCaptionMinimize()
 {
-    #ifndef DREAMCAST
-        PostMessage(WM_SYSCOMMAND, SC_MINIMIZE);
-    #endif
+    PostMessage(WM_SYSCOMMAND, SC_MINIMIZE);
 }
 
 void EngineWindow::OnCaptionMaximize()
 {
-    #ifndef DREAMCAST
-        PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
-    #endif
+    PostMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
 }
 
 void EngineWindow::OnCaptionFullscreen()
@@ -1466,15 +1479,11 @@ void EngineWindow::OnCaptionRestore()
     if (GetFullscreen()) {
         m_bRestore = true;
     } else {
-        #ifndef DREAMCAST
-            PostMessage(WM_SYSCOMMAND, SC_RESTORE);
-        #endif
+        PostMessage(WM_SYSCOMMAND, SC_RESTORE);
     }
 }
 
 void EngineWindow::OnCaptionClose()
 {
-    #ifndef DREAMCAST
-        StartClose();
-    #endif
+    StartClose();
 }
