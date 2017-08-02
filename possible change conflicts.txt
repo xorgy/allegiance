@@ -1,0 +1,7 @@
+interesting files during conversion:
+
+C:\Source\git\AllegianceDX7\src\engine\context.cpp -- Not applying.
+C:\Source\git\AllegianceDX7\src\engine\context.h -- Not applying
+
+C:\Source\git\AllegianceDX7\src\effect\efapp.cpp - could have conflict
+
