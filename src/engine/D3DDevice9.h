@@ -311,7 +311,9 @@ public:
 	void		ResetReferencedResources( );
 	HRESULT	CreateD3D9( class CLogFile * pLogFile );
 	HRESULT	CreateDevice( HWND hParentWindow, class CLogFile * pLogFile );
+	HRESULT	CreateDevice_Old(HWND hParentWindow, class CLogFile * pLogFile);
 	HRESULT	ResetDevice( bool bWindowed, DWORD dwWidth = 0, DWORD dwHeight = 0, int iRate = 60 ); //imago added refresh rate 7/1/09
+	HRESULT	ResetDevice_Old(bool bWindowed, DWORD dwWidth = 0, DWORD dwHeight = 0, int iRate = 60); //imago added refresh rate 7/1/09
 	HRESULT	ClearScreen( );
 	HRESULT	RenderFinished( );
 	WinPoint	GetCurrentResolution( );

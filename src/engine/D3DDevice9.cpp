@@ -143,12 +143,303 @@ HRESULT CD3DDevice9::CreateD3D9( CLogFile * pLogFile )
 }
 
 
+D3DFORMAT dhFind32BitMode(IDirect3D9 *p_d3d) {
+	const D3DFORMAT cBufferFormats[] = { D3DFMT_X8R8G8B8,D3DFMT_A8R8G8B8 };
+	const int cFormatCount = sizeof(cBufferFormats) / sizeof(D3DFORMAT);
+	HRESULT hr = D3D_OK;
+	int count;
+
+
+	for (count = 0; count<cFormatCount; count++) {
+
+		//CheckDeviceType() is used to verify that a Device can support a particular display mode.
+		hr = p_d3d->CheckDeviceType(D3DADAPTER_DEFAULT, //Test the primary display device, this is
+														//necessary because systems can have add-on cards
+														//or multi-monitor setups
+			D3DDEVTYPE_HAL,  //This states that we want support for this mode
+							 //in hardware rather than emulated in software
+			cBufferFormats[count],   //The is the primary (viewable) buffer format
+			cBufferFormats[count],   //This is the back (drawable) buffer format
+			FALSE);   //Is this windowed mode?  Nope
+
+		if (SUCCEEDED(hr)) {
+			return cBufferFormats[count];
+		}
+
+	}
+
+	debugf("dhFind32BitMode failed to find a usable mode\n");
+	return D3DFMT_UNKNOWN;
+}
+
+//******************************************************************************************
+// Function:dhFind16BitMode
+// Whazzit:Tests a couple of 16-bit modes to see if they are supported.  Virtually every
+//         graphics card in existance will support one of these 2 formats:
+//         D3DFMT_R5G6B5,D3DFMT_X1R5G5B5
+//         Returns D3DFMT_UNKNOWN if it can't find a valid mode
+//******************************************************************************************
+D3DFORMAT dhFind16BitMode(IDirect3D9 *p_d3d) {
+	const D3DFORMAT cBufferFormats[] = { D3DFMT_R5G6B5,D3DFMT_X1R5G5B5 };
+	const int cFormatCount = sizeof(cBufferFormats) / sizeof(D3DFORMAT);
+	HRESULT hr = D3D_OK;
+	int count;
+
+
+	for (count = 0; count<cFormatCount; count++) {
+
+		//CheckDeviceType() is used to verify that a Device can support a particular display mode.
+		hr = p_d3d->CheckDeviceType(D3DADAPTER_DEFAULT, //Test the primary display device, this is
+														//necessary because systems can have add-on cards
+														//or multi-monitor setups
+			D3DDEVTYPE_HAL,  //This states that we want support for this mode
+							 //in hardware rather than emulated in software
+			cBufferFormats[count],   //The is the primary (viewable) buffer format
+			cBufferFormats[count],   //This is the back (drawable) buffer format
+			FALSE);   //Is this windowed mode?  Nope
+
+		if (SUCCEEDED(hr)) {
+			return cBufferFormats[count];
+		}
+
+	}
+
+	debugf("dhFind16BitMode failed to find a usable mode\n");
+	return D3DFMT_UNKNOWN;
+}
+
+//******************************************************************************************
+// Function:dhInitPresentParameters
+// Whazzit:Initializes PresentParameters so they can be passed to CreateDevice
+//******************************************************************************************
+void dhInitPresentParameters(bool p_fullscreen, HWND p_window, DWORD p_width, DWORD p_height, D3DFORMAT p_format, D3DFORMAT p_depth, D3DPRESENT_PARAMETERS *p_pp)
+{
+
+	//Clear out our D3DPRESENT_PARAMETERS structure.  Even though we're going
+	//to set virtually all of its members, it's good practice to zero it out first.
+	ZeroMemory(p_pp, sizeof(D3DPRESENT_PARAMETERS));
+
+	//Whether we're full-screen or windowed these are the same.
+	p_pp->BackBufferCount = 1;  //We only need a single back buffer
+
+	//p_pp->MultiSampleType = D3DMULTISAMPLE_NONE; //No multi-sampling
+	p_pp->MultiSampleType = (D3DMULTISAMPLE_TYPE)g_DX9Settings.m_dwAA;
+
+	p_pp->MultiSampleQuality = 0; //No multi-sampling
+	p_pp->SwapEffect = D3DSWAPEFFECT_DISCARD; // Throw away previous frames, we don't need them
+	p_pp->hDeviceWindow = p_window;  //This is our main (and only) window
+	p_pp->Flags = 0;  //No flags to set
+	p_pp->FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT; //Default Refresh Rate
+	p_pp->PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; //Default Presentation rate
+	p_pp->BackBufferFormat = p_format; //Display format
+
+	//if (p_pp->MultiSampleType == D3DMULTISAMPLE_NONE) {
+	//	p_pp->SwapEffect = D3DSWAPEFFECT_FLIP;
+	//	p_pp->Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL | D3DPRESENTFLAG_LOCKABLE_BACKBUFFER; //Imago 7/12/09 enabled
+	//}
+	//else {
+	//	p_pp->SwapEffect = D3DSWAPEFFECT_DISCARD;
+	//	//m_sD3DDev9.d3dPresParams.Flags	= D3DPRESENTFLAG_DEVICECLIP; //Imago 7/12/09 enabled
+	//}
+
+
+	if (p_depth == D3DFMT_UNKNOWN)
+	{
+		p_pp->EnableAutoDepthStencil = FALSE;
+	}
+	else
+	{
+		p_pp->EnableAutoDepthStencil = TRUE;
+	}
+
+	p_pp->AutoDepthStencilFormat = p_depth; //This is ignored if EnableAutoDepthStencil is FALSE
+
+											//BackBufferWidth/Height have to be set for full-screen applications, these values are
+											//used (along with BackBufferFormat) to determine the display mode.
+											//They aren't needed in windowed mode since the size of the window will be used.
+	if (p_fullscreen)
+	{
+		p_pp->Windowed = FALSE;
+		p_pp->BackBufferWidth = p_width;
+		p_pp->BackBufferHeight = p_height;
+	}
+	else
+	{
+		p_pp->Windowed = TRUE;
+	}
+
+}
+
+//******************************************************************************************
+// Function:dhInitDevice
+// Whazzit:Creates the Direct3D device.
+//******************************************************************************************
+HRESULT dhInitDevice(IDirect3D9 *p_d3d, DWORD p_adapter, D3DDEVTYPE p_dev_type, HWND p_window, D3DPRESENT_PARAMETERS *p_pp, IDirect3DDevice9 **p_device)
+{
+	HRESULT hr = S_OK;
+
+	//After filling in our D3DPRESENT_PARAMETERS structure, we're ready to create our device.
+	//Most of the options in how the device is created are set in the D3DPRESENT_PARAMETERS
+	//structure.
+	hr = p_d3d->CreateDevice(p_adapter, //User specified adapter, on a multi-monitor system
+										//there can be more than one.
+										//User specified device type, Usually HAL
+		p_dev_type,
+		//Our Window
+		p_window,
+		//Process vertices in software. This is slower than in hardware,
+		//But will work on all graphics cards.
+		//D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING,
+		//Our D3DPRESENT_PARAMETERS structure, so it knows what we want to build
+		p_pp,
+		//This will be set to point to the new device
+		p_device);
+
+
+	return hr;
+}
+
+
+// This is the new one.
+HRESULT CD3DDevice9::CreateDevice(HWND hParentWindow, CLogFile * pLogFile)
+{
+	HRESULT hr;
+
+	if (m_sDevSetupParams.bRunWindowed == true)
+	{
+		m_sD3DDev9.pCurrentMode = &m_sDevSetupParams.sWindowedMode;
+	}
+	else
+	{
+		m_sD3DDev9.pCurrentMode = &m_sDevSetupParams.sFullScreenMode;
+	}
+
+	//m_sDevSetupParams.bAntiAliased = false;
+
+	m_sD3DDev9.pCurrentMode->d3dMultiSampleSetting = (D3DMULTISAMPLE_TYPE)g_DX9Settings.m_dwAA;
+
+	m_sD3DDev9.pCurrentMode->mode.Format = dhFind32BitMode(m_sD3DDev9.pD3D9);
+
+	dhInitPresentParameters(m_sDevSetupParams.bRunWindowed == false,
+		hParentWindow,
+		m_sD3DDev9.pCurrentMode->mode.Width > 0 ? m_sD3DDev9.pCurrentMode->mode.Width : 800,
+		m_sD3DDev9.pCurrentMode->mode.Height > 0 ? m_sD3DDev9.pCurrentMode->mode.Height : 600,
+		m_sD3DDev9.pCurrentMode->mode.Format,
+		//D3DFMT_D32,
+		m_sD3DDev9.pCurrentMode->fmtDepthStencil,
+		&m_sD3DDev9.d3dPresParams);
+
+	hr = dhInitDevice(m_sD3DDev9.pD3D9, m_sDevSetupParams.iAdapterID, D3DDEVTYPE_HAL, hParentWindow, &m_sD3DDev9.d3dPresParams, &m_sD3DDev9.pD3DDevice);
+
+	if (FAILED(hr)) {
+		debugf("Error: %s error description: %s\n",
+			DXGetErrorString(hr), DXGetErrorDescription(hr));
+	}
+
+
+	if (hr != D3D_OK)
+	{
+		return hr;
+	}
+
+	m_sD3DDev9.bHardwareVP = true;
+	m_sD3DDev9.bPureDevice = true;
+
+	if (hr == D3D_OK)
+	{
+		hr = m_sD3DDev9.pD3DDevice->GetDeviceCaps(&m_sD3DDev9.sD3DDevCaps);
+		_ASSERT(hr == D3D_OK);
+		hr = m_sD3DDev9.pD3D9->GetAdapterIdentifier(m_sDevSetupParams.iAdapterID,
+			0,
+			&m_sD3DDev9.d3dAdapterID);
+		_ASSERT(hr == D3D_OK);
+	}
+
+	// Recreate the AA depth stencil buffer, if required.
+	CreateAADepthStencilBuffer();
+
+	//ClearScreen();
+	//RenderFinished();
+	//ClearScreen();
+	//RenderFinished();
+
+	// Store state.
+	m_sD3DDev9.bIsWindowed = m_sDevSetupParams.bRunWindowed;
+
+	////try this hack Imago 7/10
+	//if (m_sD3DDev9.pCurrentMode->mode.Format == D3DFMT_UNKNOWN) {
+	//	m_sD3DDev9.pCurrentMode->mode.Format = D3DFMT_R5G6B5;
+	//}
+
+	// Get flags and caps.
+	HRESULT hTemp = m_sD3DDev9.pD3D9->CheckDeviceFormat(m_sDevSetupParams.iAdapterID, //Imago was D3DADAPTER_DEFAULT 7/28/09
+		D3DDEVTYPE_HAL,
+		m_sD3DDev9.pCurrentMode->mode.Format,
+		0,
+		D3DRTYPE_TEXTURE,
+		D3DFMT_A1R5G5B5);
+	if (hTemp == D3D_OK)
+	{
+		pLogFile->OutputString("wasit wiDevice supports A1R5G5B5 format.\n");
+		m_sD3DDev9.sFormatFlags.bSupportsA1R5G6B6Format = true;
+	}
+	else {
+		m_sD3DDev9.sFormatFlags.bSupportsA1R5G6B6Format = false;
+	}
+
+	// Auto gen mipmaps flag - include user setting.
+	if (((m_sD3DDev9.sD3DDevCaps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) != 0) &&
+		(m_sDevSetupParams.bAutoGenMipmap == true))
+	{
+		pLogFile->OutputString("Device can auto generate mipmaps.\n");
+		m_sD3DDev9.sFormatFlags.bCanAutoGenMipMaps = true;
+		m_sDevSetupParams.bAutoGenMipmap = true;
+	}
+	else {
+		m_sD3DDev9.sFormatFlags.bCanAutoGenMipMaps = false; //Imago 7/10 #41
+		m_sDevSetupParams.bAutoGenMipmap = false;
+	}
+
+	// Initialise the caches.
+	InitialiseDeviceStateCache(&m_sD3DDev9.sDeviceStateCache);
+	InitialiseTransformCache(&m_sD3DDev9.sTransformCache);
+	InitialiseMaterialCache(&m_sD3DDev9.sMaterialCache);
+	InitialiseLightCache(&m_sD3DDev9.sLightCache);
+
+	// Setup stats.
+#ifdef EnablePerformanceCounters
+	m_pPerformanceCounters[eD9S_InitialTexMem] = (int)m_sD3DDev9.pD3DDevice->GetAvailableTextureMem();
+
+	if (m_sD3DDev9.bPureDevice == true)
+	{
+		sprintf_s(m_sDevSetupParams.szDevType, 64, "Pure HWVP");
+	}
+	else if (m_sD3DDev9.bHardwareVP == true)
+	{
+		sprintf_s(m_sDevSetupParams.szDevType, 64, "HWVP");
+	}
+	else
+	{
+		sprintf_s(m_sDevSetupParams.szDevType, 64, "SWVP");
+	}
+
+	sprintf_s(m_sD3DDev9.pszDevSetupString, 256,
+		"%s [%s, %s]", m_sD3DDev9.d3dAdapterID.Description,
+		m_sDevSetupParams.szDevType,
+		m_sDevSetupParams.szAAType);
+#endif // EnablePerformanceCounters
+
+
+	return hr;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // InitialiseDevice()
 // Create a new D3D9 device, given a window.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-HRESULT CD3DDevice9::CreateDevice( HWND hParentWindow, CLogFile * pLogFile )
+
+HRESULT CD3DDevice9::CreateDevice_Old( HWND hParentWindow, CLogFile * pLogFile )
 {
 	DWORD dwCreationFlags;
 	HRESULT hr;
@@ -162,6 +453,8 @@ HRESULT CD3DDevice9::CreateDevice( HWND hParentWindow, CLogFile * pLogFile )
 		m_sD3DDev9.pCurrentMode = &m_sDevSetupParams.sFullScreenMode;
 	}
 
+	
+
 	// Create a new 3D device.
 	memset( &m_sD3DDev9.d3dPresParams, 0, sizeof( D3DPRESENT_PARAMETERS ) );
 	m_sD3DDev9.d3dPresParams.AutoDepthStencilFormat		= m_sD3DDev9.pCurrentMode->fmtDepthStencil;
@@ -169,11 +462,15 @@ HRESULT CD3DDevice9::CreateDevice( HWND hParentWindow, CLogFile * pLogFile )
 	m_sD3DDev9.d3dPresParams.BackBufferCount			= 1;
 	m_sD3DDev9.d3dPresParams.hDeviceWindow				= hParentWindow;
 	m_sD3DDev9.d3dPresParams.Windowed					= m_sDevSetupParams.bRunWindowed;
-	m_sD3DDev9.d3dPresParams.BackBufferFormat			= m_sD3DDev9.pCurrentMode->mode.Format;
+	
+	
+	//m_sD3DDev9.d3dPresParams.BackBufferFormat			= m_sD3DDev9.pCurrentMode->mode.Format;
+	m_sD3DDev9.d3dPresParams.BackBufferFormat			= dhFind32BitMode(m_sD3DDev9.pD3D9);
+
 	m_sD3DDev9.d3dPresParams.BackBufferWidth			= m_sD3DDev9.pCurrentMode->mode.Width;
 	m_sD3DDev9.d3dPresParams.BackBufferHeight			= m_sD3DDev9.pCurrentMode->mode.Height;
 	if (m_sD3DDev9.pCurrentMode->d3dMultiSampleSetting == D3DMULTISAMPLE_NONE) {
-		m_sD3DDev9.d3dPresParams.SwapEffect = D3DSWAPEFFECT_FLIP;
+		//m_sD3DDev9.d3dPresParams.SwapEffect = D3DSWAPEFFECT_FLIP;
 		m_sD3DDev9.d3dPresParams.Flags	= D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL | D3DPRESENTFLAG_LOCKABLE_BACKBUFFER; //Imago 7/12/09 enabled
 	} else {
 		m_sD3DDev9.d3dPresParams.SwapEffect	= D3DSWAPEFFECT_DISCARD;
@@ -240,6 +537,14 @@ HRESULT CD3DDevice9::CreateDevice( HWND hParentWindow, CLogFile * pLogFile )
 		m_sD3DDev9.d3dPresParams.AutoDepthStencilFormat = D3DFMT_D24X8;
 	}
 
+	//m_sD3DDev9.pCurrentMode->mode.Format = dhFind16BitMode(m_sD3DDev9.pD3D9);
+	//m_sD3DDev9.d3dPresParams.BackBufferFormat = m_sD3DDev9.pCurrentMode->mode.Format;
+	//dwCreationFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+	//dwCreationFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE;
+
+	bool deviceCreated = false;
+
+	// Try for a pure HWVP device.
 	hr = m_sD3DDev9.pD3D9->CreateDevice(	m_sDevSetupParams.iAdapterID,
 											DeviceType, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD
 											hParentWindow,
@@ -252,86 +557,97 @@ HRESULT CD3DDevice9::CreateDevice( HWND hParentWindow, CLogFile * pLogFile )
 	// don't return D3DERR_NOTAVAILABLE when they don't support certain device types. In the event that 
 	// the CreateDevice call fails, we'll not bother checking the return value and just step down the 
 	// creation chain.
-	if( hr != D3D_OK )
+
+	
+	if (SUCCEEDED(hr) && deviceCreated == false)
 	{
-		pLogFile->OutputStringV( "Pure HWVP device creation failed: 0x%08x.\n", hr );
-		
-		//if( hr == D3DERR_NOTAVAILABLE )
-		{
-			// No, try a non-pure device.
-			dwCreationFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
-			hr = m_sD3DDev9.pD3D9->CreateDevice(	m_sDevSetupParams.iAdapterID,
-												DeviceType, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD,
-												hParentWindow,
-												dwCreationFlags,
-												&m_sD3DDev9.d3dPresParams,
-												&m_sD3DDev9.pD3DDevice );
-			if( hr != D3D_OK )
-			{
-				pLogFile->OutputStringV( "HWVP device creation failed: 0x%08x.\n", hr );
-				
-				// Still no joy, try a software vp device.
-				//if( hr == D3DERR_NOTAVAILABLE )
-				{
-					dwCreationFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-					hr = m_sD3DDev9.pD3D9->CreateDevice(	m_sDevSetupParams.iAdapterID,
-														DeviceType, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD,
-														hParentWindow,
-														dwCreationFlags,
-														&m_sD3DDev9.d3dPresParams,
-														&m_sD3DDev9.pD3DDevice );
-					if( hr == D3D_OK )
-					{
-						m_sD3DDev9.bHardwareVP = false;
-						m_sD3DDev9.bPureDevice = false;
-						pLogFile->OutputString( "SWVP device created.\n" );
-					}
-					else
-					{
-						pLogFile->OutputStringV( "SWVP device creation failed: 0x%08x.\n", hr );
-						hr = m_sD3DDev9.pD3D9->CreateDevice(	m_sDevSetupParams.iAdapterID,
-														D3DDEVTYPE_SW, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD,
-														hParentWindow,
-														dwCreationFlags,
-														&m_sD3DDev9.d3dPresParams,
-														&m_sD3DDev9.pD3DDevice );
-						if( hr == D3D_OK )
-						{
-							m_sD3DDev9.bHardwareVP = false;
-							m_sD3DDev9.bPureDevice = false;
-							pLogFile->OutputString( "D3DDEVTYPE_SW device created.\n" );
-						}
-					}
-				}
-			}
-			else
-			{
-				m_sD3DDev9.bHardwareVP = true;
-				m_sD3DDev9.bPureDevice = false;
-				pLogFile->OutputString( "HWVP device created.\n" );
-			}
-		}
+		deviceCreated = true;
+		// Valid pure hw device.
+		m_sD3DDev9.bHardwareVP = true;
+		m_sD3DDev9.bPureDevice = true;
+		pLogFile->OutputString("Pure HWVP device created.\n");
 	}
-	else
+	else if(deviceCreated == false) // Try for a non-pure HWVP device.
 	{
-		if (bForceSWVP) {
-			m_sD3DDev9.bHardwareVP = false;
-			m_sD3DDev9.bPureDevice = false;
-			pLogFile->OutputString( "Forced SWVP device created.\n" );
-		} else {
-			// Valid pure hw device.
-			m_sD3DDev9.bHardwareVP = true;
-			m_sD3DDev9.bPureDevice = true;
-			pLogFile->OutputString( "Pure HWVP device created.\n" );
-		}
+		pLogFile->OutputStringV("Pure HWVP device creation failed: 0x%08x.\n", hr);
+		pLogFile->OutputStringV("Error: %s error description: %s\n",
+			DXGetErrorString(hr), DXGetErrorDescription(hr));
+
+		// No, try a non-pure device.
+		dwCreationFlags = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+		hr = m_sD3DDev9.pD3D9->CreateDevice(m_sDevSetupParams.iAdapterID,
+			DeviceType, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD,
+			hParentWindow,
+			dwCreationFlags,
+			&m_sD3DDev9.d3dPresParams,
+			&m_sD3DDev9.pD3DDevice);
 	}
 
-	if( hr != D3D_OK )
+	// Try for a non-pure HWVP de
+	if (SUCCEEDED(hr) && deviceCreated == false)
 	{
-		return hr;
+		deviceCreated = true;
+		m_sD3DDev9.bHardwareVP = true;
+		m_sD3DDev9.bPureDevice = false;
+		pLogFile->OutputString("Non-Pure HWVP device created.\n");
 	}
- 
-	if( hr == D3D_OK )
+	else if (deviceCreated == false) // Try for a non-pure SWVP device.
+	{
+		pLogFile->OutputStringV("HWVP device creation failed: 0x%08x.\n", hr);
+		pLogFile->OutputStringV("Error: %s error description: %s\n",
+			DXGetErrorString(hr), DXGetErrorDescription(hr));
+
+		dwCreationFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+		hr = m_sD3DDev9.pD3D9->CreateDevice(m_sDevSetupParams.iAdapterID,
+			DeviceType, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD,
+			hParentWindow,
+			dwCreationFlags,
+			&m_sD3DDev9.d3dPresParams,
+			&m_sD3DDev9.pD3DDevice);
+	}
+
+	if (SUCCEEDED(hr) && deviceCreated == false)
+	{
+		deviceCreated = true;
+		m_sD3DDev9.bHardwareVP = false;
+		m_sD3DDev9.bPureDevice = false;
+		pLogFile->OutputString("SWVP device created.\n");
+	}
+	else if (deviceCreated == false) // Try for a D3DDEVTYPE_SW device.
+	{
+		pLogFile->OutputStringV("SWVP device creation failed: 0x%08x.\n", hr);
+		pLogFile->OutputStringV("Error: %s error description: %s\n",
+			DXGetErrorString(hr), DXGetErrorDescription(hr));
+
+		hr = m_sD3DDev9.pD3D9->CreateDevice(m_sDevSetupParams.iAdapterID,
+			D3DDEVTYPE_SW, //D3DDEVTYPE_HAL, changed for NVidia PerfHUD,
+			hParentWindow,
+			dwCreationFlags,
+			&m_sD3DDev9.d3dPresParams,
+			&m_sD3DDev9.pD3DDevice);
+	}
+
+	if (SUCCEEDED(hr) && deviceCreated == false)
+	{
+		deviceCreated = true;
+		m_sD3DDev9.bHardwareVP = false;
+		m_sD3DDev9.bPureDevice = false;
+		pLogFile->OutputString("D3DDEVTYPE_SW device created.\n");
+	}
+	else if(deviceCreated == false)
+	{
+		pLogFile->OutputStringV("D3DDEVTYPE_SW device failed.\n", hr);
+		pLogFile->OutputStringV("Error: %s error description: %s\n",
+			DXGetErrorString(hr), DXGetErrorDescription(hr));
+	}
+
+	if(m_sD3DDev9.pD3DDevice == nullptr)
+		(*(int*)0) = 0; // Force exception here.
+
+	if(FAILED(hr))
+		(*(int*)0) = 0; // Force exception here.
+
+	if(SUCCEEDED(hr))
 	{
 		hr = m_sD3DDev9.pD3DDevice->GetDeviceCaps( &m_sD3DDev9.sD3DDevCaps );
 		_ASSERT( hr == D3D_OK );
@@ -468,6 +784,68 @@ void CD3DDevice9::CreateAADepthStencilBuffer()
 	}
 }
 
+// This is the new one.
+HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
+	DWORD	dwWidth /*=0*/,
+	DWORD	dwHeight /*=0*/,
+	int 	iRate) // =60 imago added iRate 7/1/09
+{
+	HRESULT hr;
+
+	if (dwWidth != 0)
+		m_sD3DDev9.d3dPresParams.BackBufferWidth = dwWidth;
+
+	if(dwHeight != 0)
+		m_sD3DDev9.d3dPresParams.BackBufferHeight = dwHeight;
+
+	m_sD3DDev9.d3dPresParams.FullScreen_RefreshRateInHz = 0;
+
+	ResetReferencedResources();
+
+	// Currently, render targets and dynamic buffers reside in the the default pool.
+	CVRAMManager::Get()->EvictDefaultPoolResources();
+	CVBIBManager::Get()->EvictDefaultPoolResources();
+
+	//if (m_sDevSetupParams.bAntiAliased == true)
+	//{
+	//	// BT - 9/17 - Prevent crash on reset device with AA enabled.
+	//	if (m_sD3DDev9.pRTDepthStencilSurface != NULL)
+	//	{
+	//		m_sD3DDev9.pRTDepthStencilSurface->Release();
+	//		m_sD3DDev9.pRTDepthStencilSurface = NULL;
+	//	}
+
+	//	// BT - 9/17 - Prevent crash on reset device with AA enabled.
+	//	if (m_sD3DDev9.pBackBufferDepthStencilSurface != NULL)
+	//	{
+	//		// We also stored a pointer to the main back buffer.
+	//		m_sD3DDev9.pBackBufferDepthStencilSurface->Release();
+	//		m_sD3DDev9.pBackBufferDepthStencilSurface = NULL;
+	//	}
+	//}
+
+	hr = m_sD3DDev9.pD3DDevice->Reset(&m_sD3DDev9.d3dPresParams); //imago changed 6/29/09 to fall thru  //Fix memory leak -Imago 8/2/09
+
+	if (FAILED(hr) == true) {
+
+		// Initialise the caches.
+		InitialiseDeviceStateCache(&m_sD3DDev9.sDeviceStateCache);
+		InitialiseTransformCache(&m_sD3DDev9.sTransformCache);
+		InitialiseMaterialCache(&m_sD3DDev9.sMaterialCache);
+		InitialiseLightCache(&m_sD3DDev9.sLightCache);
+
+		// Recreate the AA depth stencil buffer, if required.
+		//CreateAADepthStencilBuffer();
+
+		// UIpdate this Imago 7/19/09
+		sprintf_s(m_sD3DDev9.pszDevSetupString, 256,
+			"%s [%s, %s]", m_sD3DDev9.d3dAdapterID.Description,
+			m_sDevSetupParams.szDevType,
+			m_sDevSetupParams.szAAType);
+	}
+
+	return hr;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,7 +939,10 @@ HRESULT	CD3DDevice9::ResetDevice(	bool	bWindowed,
 
 	{
 		// Prepare the d3dPresParams.
-		m_sD3DDev9.d3dPresParams.BackBufferFormat	= m_sD3DDev9.pCurrentMode->mode.Format;
+		//m_sD3DDev9.d3dPresParams.BackBufferFormat	= m_sD3DDev9.pCurrentMode->mode.Format;
+		
+		m_sD3DDev9.d3dPresParams.BackBufferFormat = dhFind32BitMode(m_sD3DDev9.pD3D9);
+		
 		m_sD3DDev9.d3dPresParams.MultiSampleType = (D3DMULTISAMPLE_TYPE)g_DX9Settings.m_dwAA;
 		m_sD3DDev9.d3dPresParams.AutoDepthStencilFormat = m_sD3DDev9.pCurrentMode->fmtDepthStencil;
 
