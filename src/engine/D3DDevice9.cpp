@@ -785,7 +785,7 @@ void CD3DDevice9::CreateAADepthStencilBuffer()
 }
 
 // This is the new one.
-HRESULT	CD3DDevice9::ResetDevice(bool	bWindowed,
+HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
 	DWORD	dwWidth /*=0*/,
 	DWORD	dwHeight /*=0*/,
 	int 	iRate) // =60 imago added iRate 7/1/09
@@ -857,7 +857,7 @@ HRESULT	CD3DDevice9::ResetDevice(bool	bWindowed,
 // ResetDevice()
 // Reset the device, switching from full screen to windowed.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-HRESULT	CD3DDevice9::ResetDevice_Old(	bool	bWindowed, 
+HRESULT	CD3DDevice9::ResetDevice(	bool	bWindowed, 
 									DWORD	dwWidth /*=0*/, 
 									DWORD	dwHeight /*=0*/, 
 									int 	iRate) // =60 imago added iRate 7/1/09
