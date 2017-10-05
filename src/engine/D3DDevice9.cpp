@@ -785,7 +785,7 @@ void CD3DDevice9::CreateAADepthStencilBuffer()
 }
 
 // This is the new one.
-HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
+HRESULT	CD3DDevice9::ResetDevice(bool	bWindowed,
 	DWORD	dwWidth /*=0*/,
 	DWORD	dwHeight /*=0*/,
 	int 	iRate) // =60 imago added iRate 7/1/09
@@ -798,6 +798,7 @@ HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
 	if(dwHeight != 0)
 		m_sD3DDev9.d3dPresParams.BackBufferHeight = dwHeight;
 
+	m_sD3DDev9.d3dPresParams.BackBufferFormat = dhFind32BitMode(m_sD3DDev9.pD3D9);
 	m_sD3DDev9.d3dPresParams.FullScreen_RefreshRateInHz = 0;
 
 	ResetReferencedResources();
@@ -806,28 +807,32 @@ HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
 	CVRAMManager::Get()->EvictDefaultPoolResources();
 	CVBIBManager::Get()->EvictDefaultPoolResources();
 
-	//if (m_sDevSetupParams.bAntiAliased == true)
-	//{
-	//	// BT - 9/17 - Prevent crash on reset device with AA enabled.
-	//	if (m_sD3DDev9.pRTDepthStencilSurface != NULL)
-	//	{
-	//		m_sD3DDev9.pRTDepthStencilSurface->Release();
-	//		m_sD3DDev9.pRTDepthStencilSurface = NULL;
-	//	}
+	if (m_sDevSetupParams.bAntiAliased == true)
+	{
+		// BT - 9/17 - Prevent crash on reset device with AA enabled.
+		if (m_sD3DDev9.pRTDepthStencilSurface != NULL)
+		{
+			m_sD3DDev9.pRTDepthStencilSurface->Release();
+			m_sD3DDev9.pRTDepthStencilSurface = NULL;
+		}
 
-	//	// BT - 9/17 - Prevent crash on reset device with AA enabled.
-	//	if (m_sD3DDev9.pBackBufferDepthStencilSurface != NULL)
-	//	{
-	//		// We also stored a pointer to the main back buffer.
-	//		m_sD3DDev9.pBackBufferDepthStencilSurface->Release();
-	//		m_sD3DDev9.pBackBufferDepthStencilSurface = NULL;
-	//	}
-	//}
+		// BT - 9/17 - Prevent crash on reset device with AA enabled.
+		if (m_sD3DDev9.pBackBufferDepthStencilSurface != NULL)
+		{
+			// We also stored a pointer to the main back buffer.
+			m_sD3DDev9.pBackBufferDepthStencilSurface->Release();
+			m_sD3DDev9.pBackBufferDepthStencilSurface = NULL;
+		}
+	}
 
 	hr = m_sD3DDev9.pD3DDevice->Reset(&m_sD3DDev9.d3dPresParams); //imago changed 6/29/09 to fall thru  //Fix memory leak -Imago 8/2/09
 
-	if (FAILED(hr) == true) {
-
+	if (FAILED(hr)) {
+		debugf("Error: %s error description: %s\n",
+			DXGetErrorString(hr), DXGetErrorDescription(hr));
+	}
+	else
+	{
 		// Initialise the caches.
 		InitialiseDeviceStateCache(&m_sD3DDev9.sDeviceStateCache);
 		InitialiseTransformCache(&m_sD3DDev9.sTransformCache);
@@ -835,7 +840,7 @@ HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
 		InitialiseLightCache(&m_sD3DDev9.sLightCache);
 
 		// Recreate the AA depth stencil buffer, if required.
-		//CreateAADepthStencilBuffer();
+		CreateAADepthStencilBuffer();
 
 		// UIpdate this Imago 7/19/09
 		sprintf_s(m_sD3DDev9.pszDevSetupString, 256,
@@ -852,7 +857,7 @@ HRESULT	CD3DDevice9::ResetDevice_Old(bool	bWindowed,
 // ResetDevice()
 // Reset the device, switching from full screen to windowed.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-HRESULT	CD3DDevice9::ResetDevice(	bool	bWindowed, 
+HRESULT	CD3DDevice9::ResetDevice_Old(	bool	bWindowed, 
 									DWORD	dwWidth /*=0*/, 
 									DWORD	dwHeight /*=0*/, 
 									int 	iRate) // =60 imago added iRate 7/1/09

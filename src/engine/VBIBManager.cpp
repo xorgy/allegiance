@@ -901,8 +901,19 @@ bool CVBIBManager::AllocateDynamicVertexBuffer(	SVBIBHandle * pResult,
 		pBuffer->bDefaultPool	= ( m_iDynamicBufferPool == D3DPOOL_DEFAULT ) ? true : false;
 		
 		// BT - 10/17 - Hunting for the reason CreateVertexBuffer is failing.
-		ZRetailAssert(CD3DDevice9::Get());
-		ZRetailAssert(CD3DDevice9::Get()->Device());
+		if (CD3DDevice9::Get() == nullptr)
+			(*(int*)0) = 0; // Force exception here.
+
+		// BT - 10/17 - Hunting for the reason CreateVertexBuffer is failing.
+		if (CD3DDevice9::Get()->Device() == nullptr)
+		{
+			CLogFile devLog("DeviceCreation_VBIBManager.log");
+			CD3DDevice9::Get()->CreateDevice(::GetDesktopWindow(), &devLog);
+		}
+
+		// BT - 10/17 - Hunting for the reason CreateVertexBuffer is failing.
+		if (CD3DDevice9::Get()->Device() == nullptr)
+			(*(int*)0) = 0; // Force exception here.
 
 		// Create the resource.
 		hr = CD3DDevice9::Get()->Device()->CreateVertexBuffer(
