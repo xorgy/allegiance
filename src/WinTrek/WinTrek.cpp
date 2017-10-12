@@ -2646,7 +2646,7 @@ public:
         TrekWindow(
             papp,
             strCommandLine,
-            true,
+            false, // BT - 10/17 - Set to always start windowed, then go full screen after game is initialized. Trying to find the source of the mystery "crash on launch" issues.
 			WinRect(0 + CD3DDevice9::Get()->GetDeviceSetupParams()->iWindowOffsetX,
 					0 + CD3DDevice9::Get()->GetDeviceSetupParams()->iWindowOffsetY,
 					CD3DDevice9::Get()->GetCurrentMode()->mode.Width +
@@ -3304,6 +3304,13 @@ public:
         // initialize the bad words filters
         LoadBadWords ();
 
+		// BT - 10/17 - Check if Allegiance should run windowed or not... This happens after allegiance has 
+		// already initialized to a window and gotten its fonts loaded.
+		bool startFullScreen = true;
+		ParseCommandLine(strCommandLine, startFullScreen);
+
+		SetFullscreen(startFullScreen);
+
         m_pmissileLast = 0;
 
         //
@@ -3321,7 +3328,7 @@ public:
 			HKEY    hKey;
 			DWORD   dwHasSeenMovie = 0;
 			DWORD dwDataSize = sizeof(dwHasSeenMovie);
-			if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT, 0, KEY_ALL_ACCESS, &hKey))
+			if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT, 0, KEY_ALL_ACCESS, &hKey))
 			{
 				RegQueryValueExA(hKey, "HasSeenMovie", NULL, NULL, (LPBYTE)&dwHasSeenMovie, &dwDataSize);
 
@@ -3402,7 +3409,7 @@ public:
     {
         HKEY hKey;
 
-        if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+        if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
                 0, "", REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL))
         {
             ::RegSetValueEx(hKey, szName, NULL, REG_DWORD, (const BYTE*)&dwValue, sizeof(dwValue));
@@ -3416,9 +3423,9 @@ public:
         DWORD dwResult = dwDefault;
 
 		// mmf lets actually load it instead of creating it
-        // if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+        // if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
         //        0, "", REG_OPTION_NON_VOLATILE, KEY_READ, NULL, &hKey, NULL))
-		if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+		if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
                 0, KEY_READ, &hKey))
         {
             DWORD dwSize = sizeof(dwResult);
@@ -3438,7 +3445,7 @@ public:
     {
         HKEY hKey;
 
-        if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+        if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
                 0, "", REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL))
         {
             ::RegSetValueEx(hKey, szName, NULL, REG_SZ,
@@ -3453,9 +3460,9 @@ public:
         ZString strResult = strDefault;
 
 		// mmf lets actually load it instead of creating it
-        //if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+        //if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
         //        0, "", REG_OPTION_NON_VOLATILE, KEY_READ, NULL, &hKey, NULL))
-		if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+		if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
                 0, KEY_READ, &hKey))
         {
             const int nMaxStrLen = 2048;
@@ -3543,9 +3550,16 @@ public:
         m_pscreenBackdrop  = NULL;
         SetCaption(NULL);
 
-        SetImage(Image::GetEmpty());
-        m_pwrapImageConsole->SetImage(Image::GetEmpty());
-        m_pwrapImageTop->SetImage(Image::GetEmpty());
+		// BT - 10/17 - Fixing 8982261	211206	allegiance.exe	allegiance.exe	tvector.h	362	13	0	Win32 StructuredException at 0058C1DA : UNKNOWN	2017-10-08 14:33:29	0x0018C1DA	10	UNKNOWN
+		// Not sure why we need to set the image to empty when the window is closing down anyway. 
+		// This causes a crash on some machines as the underlying TVector is already gone when this part of the code
+		// is reached. 
+		if (m_screen == ScreenIDCombat)
+		{
+			SetImage(Image::GetEmpty());
+			m_pwrapImageConsole->SetImage(Image::GetEmpty());
+			m_pwrapImageTop->SetImage(Image::GetEmpty());
+		}
 
         m_pgeoScene          = NULL;
         m_pcamera            = NULL;
@@ -5828,7 +5842,7 @@ public:
 
     ZString GetVirtualJoystickMenuString()
     {
-        return (m_bEnableVirtualJoystick ? "Virtual Joystick On " : "Virtual Joystick Off ");
+        return (m_bEnableVirtualJoystick ? "Use Mouse As Virtual Joystick: On " : "Use Mouse As Virtual Joystick: Off ");
     }
 
     ZString GetFlipYMenuString()
@@ -9209,7 +9223,7 @@ public:
         {
             HKEY hKey;
 
-            if (ERROR_SUCCESS != ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT, 0, "", REG_OPTION_NON_VOLATILE, KEY_READ, NULL, &hKey, NULL)
+            if (ERROR_SUCCESS != ::RegCreateKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT, 0, "", REG_OPTION_NON_VOLATILE, KEY_READ, NULL, &hKey, NULL)
             ) {
                 return NULL;
             }
@@ -9239,7 +9253,7 @@ public:
     {
         HKEY hKey;
 
-        if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, ALLEGIANCE_REGISTRY_KEY_ROOT,
+        if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_CURRENT_USER, ALLEGIANCE_REGISTRY_KEY_ROOT,
                 0, "", REG_OPTION_NON_VOLATILE, KEY_READ, NULL, &hKey, NULL)) {
             char buf[128];
             DWORD dwSize = sizeof(buf);

@@ -4869,19 +4869,22 @@ HRESULT FedSrvSiteBase::OnAppMessage(FedMessaging * pthis, CFMConnection & cnxnF
 		const FMD_S_MISSIONDEF *missionDef = pfsMission->GetMissionDef();
 		ZString missionName = ZString(missionDef->misparms.strGameName);
 
-		BEGIN_PFM_CREATE(g.fmLobby, pfmLogChat, S, LOG_CHAT_MESSAGE)
-			FM_VAR_PARM((PCC)missionName, CB_ZTS)
-			FM_VAR_PARM((PCC)senderName, CB_ZTS)
-			FM_VAR_PARM((PCC)targetName, CB_ZTS)
-			FM_VAR_PARM(FM_VAR_REF(pfmChat, Message), CB_ZTS)
-			FM_VAR_PARM(szRemote, CB_ZTS)
-		END_PFM_CREATE
-		  
-		pfmLogChat->sourceSteamID = sourceSteamID;
-		pfmLogChat->targetSteamID = targetSteamID;
-		  
-		if (g.fmLobby.IsConnected())
+		// BT - 10/17 - Fixing crash on chat logging when lobby is not connected.
+		if (g.fmLobby.IsConnected() == true)
+		{
+			BEGIN_PFM_CREATE(g.fmLobby, pfmLogChat, S, LOG_CHAT_MESSAGE)
+				FM_VAR_PARM((PCC)missionName, CB_ZTS)
+				FM_VAR_PARM((PCC)senderName, CB_ZTS)
+				FM_VAR_PARM((PCC)targetName, CB_ZTS)
+				FM_VAR_PARM(FM_VAR_REF(pfmChat, Message), CB_ZTS)
+				FM_VAR_PARM(szRemote, CB_ZTS)
+				END_PFM_CREATE
+
+			pfmLogChat->sourceSteamID = sourceSteamID;
+			pfmLogChat->targetSteamID = targetSteamID;
+
 			g.fmLobby.SendMessages(g.fmLobby.GetServerConnection(), FM_GUARANTEED, FM_FLUSH);
+		}
 
 		// BT - STEAN - End of chat logging.
 
@@ -8057,9 +8060,9 @@ IHTTPSession * BeginConfigDownload()
 
   char szConfig[MAX_PATH];
 #ifdef _ALLEGIANCE_PROD_
-  lstrcpy(szConfig, "http://autoupdate.alleg.net/allegiance.cfg"); //Imago 6/10
+  lstrcpy(szConfig, "http://allegiance.zaphop.com/allegiance-server.txt"); //Imago 6/10 // BT - STEAM
 #else
-  lstrcpy(szConfig, "http://fazdev.alleg.net/FAZ/FAZR6.cfg"); //Imago 6/10
+  lstrcpy(szConfig, "http://allegiance.zaphop.com/allegiance-server.txt"); //Imago 6/10 // BT - STEAM
 #endif
 
   CRegKey key;
@@ -10626,21 +10629,26 @@ class ThingSiteImpl : public ThingSite
                                 IscannerIGC*   s = l->data();
                                 assert (s->GetCluster() == pcluster);
 
+								// If the thing is in scanner range
 								if (s->InScannerRange(pmodel)) {
 									//Xynth something was just seen, I want to know if it was a probe that saw it and if this was high value target
-									if (s->GetObjectType() == OT_probe)
+									if (s->GetObjectType() == OT_probe && pmodel->GetSide() != nullptr)
 									{
 										ObjectID spottedID = pmodel->GetObjectID();
-										IshipIGC* pSpottedShip = pmodel->GetSide()->GetShip(spottedID);																			
-										AssetMask am = GetAssetMask(pSpottedShip, pSpottedShip->GetHullType(), false);
-										short hvMask = c_amEnemyMiner | c_amEnemyBuilder | c_amEnemyCapital | c_amEnemyCarrier | c_amEnemyBomber | c_amEnemyAPC | c_amEnemyTeleportShip;										
-										if (am & hvMask > 0)
+										IshipIGC* pSpottedShip = pmodel->GetSide()->GetShip(spottedID);	
+
+										if (pSpottedShip != nullptr)
 										{
-											ObjectID probeID = s->GetObjectID();
-											ImodelIGC * pProbeModel = s->GetMission()->GetModel(OT_probe, probeID);
-											IprobeIGC * pProbe = (IprobeIGC*)pProbeModel;
-											IshipIGC* pProbingShip = pProbe->GetProbeLauncherShip();
-											pProbingShip->SetAchievementMask(c_achmProbeSpot);
+											AssetMask am = GetAssetMask(pSpottedShip, pSpottedShip->GetHullType(), false);
+											short hvMask = c_amEnemyMiner | c_amEnemyBuilder | c_amEnemyCapital | c_amEnemyCarrier | c_amEnemyBomber | c_amEnemyAPC | c_amEnemyTeleportShip;
+											if (am & hvMask > 0)
+											{
+												ObjectID probeID = s->GetObjectID();
+												ImodelIGC * pProbeModel = s->GetMission()->GetModel(OT_probe, probeID);
+												IprobeIGC * pProbe = (IprobeIGC*)pProbeModel;
+												IshipIGC* pProbingShip = pProbe->GetProbeLauncherShip();
+												pProbingShip->SetAchievementMask(c_achmProbeSpot);
+											}
 										}
 									}
 
